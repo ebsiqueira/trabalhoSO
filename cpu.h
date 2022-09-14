@@ -1,6 +1,5 @@
 #ifndef cpu_h
 #define cpu_h
-#define _XOPEN_SOURCE 
 
 #include <ucontext.h>
 #include <iostream>
@@ -21,19 +20,23 @@ class CPU
 
             template<typename ... Tn>
             Context(void (* func)(Tn ...), Tn ... an){
+                //Get no contexto
                 getcontext(&_context);
 
                 // Aloca a pilha (importante ser char para trabalhar com bytes)
                 _stack = new char[STACK_SIZE];
-                
-                // Define tamanho da pilha
-                _context.uc_stack.ss_size = STACK_SIZE; 
-                // Define ponteiro para o topo da pilha
-                _context.uc_stack.ss_sp = &_stack;
-                // Especifica o estado da pilha
-                _context.uc_stack.ss_flags=0;
-                // Define o contexto que será retomado
-                _context.uc_link = 0;
+                if(_stack) {
+                    // Define tamanho da pilha
+                    _context.uc_stack.ss_size = STACK_SIZE; 
+                    // Define ponteiro para o topo da pilha
+                    _context.uc_stack.ss_sp = &_stack;
+                    // Especifica o estado da pilha
+                    _context.uc_stack.ss_flags=0;
+                    // Define o contexto que será retomado
+                    _context.uc_link = 0;
+                } else {
+                    exit(-1);
+                }
 
                 makecontext(&_context, (void(*)())func, sizeof ...(Tn), an...);
             }
