@@ -25,7 +25,7 @@ CPU::Context::~Context()
 
 void CPU::switch_context(Context *from, Context *to)
 {
-     db<CPU>(TRC)<<"CPU::Context::switch_context()\n";
+    db<CPU>(TRC)<<"CPU::Context::switch_context()\n";
     swapcontext(&from->_context, &to->_context);
 }
 

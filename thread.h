@@ -50,12 +50,9 @@ public:
      */ 
     int id();
 
-    /*
-     * Qualquer outro método que você achar necessário para a solução.
-     */ 
-
     // Retorna o contexto da thread
     CPU::Context * volatile context() {
+        db<Thread>(TRC)<<"Thread::context()\n";
         return _context;
     }
 
@@ -63,19 +60,14 @@ private:
     int _id;
     Context * volatile _context;
     static Thread * _running;
-    static unsigned int _thread_counter;
-
-    /*
-     * Qualquer outro atributo que você achar necessário para a solução.
-     */ 
+    static unsigned int _threadCounter;
 };
 
 template<typename ... Tn>
-inline Thread::Thread(void (* entry)(Tn ...), Tn ... an) {
-    db<Thread>(TRC) << "Thread::Thread(void (* entry)(Tn ...), Tn ... an)\n";
-    _context = new CPU::Context(entry, an ...);
-    _id = _thread_counter++;
-}
+    inline Thread::Thread(void (* entry)(Tn ...), Tn ... an) {
+        _context = new Context(entry, (char *) an...);
+        _id = _threadCounter++;
+    }
 
 __END_API
 
